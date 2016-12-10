@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Copyright 2016 Yahoo Inc.
-Licensed under the terms of the 2 clause BSD license. 
+Licensed under the terms of the 2 clause BSD license.
 Please see LICENSE file in the project root for terms.
 """
 
@@ -18,8 +18,8 @@ import caffe
 
 def resize_image(data, sz=(256, 256)):
     """
-    Resize image. Please use this resize logic for best results instead of the 
-    caffe, since it was used to generate training dataset 
+    Resize image. Please use this resize logic for best results instead of the
+    caffe, since it was used to generate training dataset
     :param str data:
         The image data
     :param sz tuple:
@@ -85,10 +85,6 @@ def main(argv):
 
     parser = argparse.ArgumentParser()
     # Required arguments: input file.
-    parser.add_argument(
-        "input_file",
-        help="Path to the input image file"
-    )
 
     # Optional arguments.
     parser.add_argument(
@@ -101,7 +97,7 @@ def main(argv):
     )
 
     args = parser.parse_args()
-    image_data = open(args.input_file).read()
+    # image_data = open(args.input_file).read()
 
     # Pre-load caffe model.
     nsfw_net = caffe.Net(args.model_def,  # pylint: disable=invalid-name
@@ -115,12 +111,14 @@ def main(argv):
     caffe_transformer.set_raw_scale('data', 255)  # rescale from [0, 1] to [0, 255]
     caffe_transformer.set_channel_swap('data', (2, 1, 0))  # swap channels from RGB to BGR
 
-    # Classify.
-    scores = caffe_preprocess_and_compute(image_data, caffe_transformer=caffe_transformer, caffe_net=nsfw_net, output_layers=['prob'])
 
     # Scores is the array containing SFW / NSFW image probabilities
     # scores[1] indicates the NSFW probability
-    print "NSFW score:  " , scores[1]
+    while True:
+        # Classify.
+        image_data = raw_input()
+        scores = caffe_preprocess_and_compute(image_data, caffe_transformer=caffe_transformer, caffe_net=nsfw_net, output_layers=['prob'])
+        print scores[1]
 
 
 
